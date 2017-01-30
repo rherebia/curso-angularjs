@@ -1,4 +1,4 @@
-angular.module('alurapic').controller('GruposController', function($scope, $http) {
+angular.module('alurapic').controller('GruposController', ['$scope', '$http', function($scope, $http) {
    
     $scope.grupos = [];
     
@@ -9,4 +9,4 @@ angular.module('alurapic').controller('GruposController', function($scope, $http
         .error(function(erro) {
             console.log(erro);
         });
-});
+}]);

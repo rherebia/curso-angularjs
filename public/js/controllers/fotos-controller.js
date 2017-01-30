@@ -1,4 +1,4 @@
-angular.module('alurapic').controller('FotosController', function($scope, recursoFoto) {
+angular.module('alurapic').controller('FotosController', ['$scope', 'recursoFoto', function($scope, recursoFoto) {
     
     $scope.fotos = [];
     $scope.filtro = '';
@@ -24,4 +24,4 @@ angular.module('alurapic').controller('FotosController', function($scope, recurs
             $scope.mensagem = 'Não foi possível remover a foto ' + foto.titulo;
         });
     };
-});
+}]);
