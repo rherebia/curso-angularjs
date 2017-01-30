@@ -1,42 +1,30 @@
-angular.module('alurapic').controller('FotoController', function($scope, $http, $routeParams) {
+angular.module('alurapic').controller('FotoController', function($scope, $routeParams, cadastroDeFotos, recursoFoto) {
    
     $scope.foto = {}; 
     $scope.mensagem = '';
     
     if ($routeParams.fotoId) {
-        $http.get('v1/fotos/' + $routeParams.fotoId)
-            .success(function(foto) {
-                $scope.foto = foto;
-            })
-            .error(function(erro) {
-                console.log(erro);
-                $scope.mensagem = 'Não foi possível obter a foto de ID ' + $routeParams.fotoId;
-            })
+        recursoFoto.get({ fotoId : $routeParams.fotoId}, function(foto) {
+            $scope.foto = foto;
+        }, function(erro) {
+            console.log(erro);
+            $scope.mensagem = 'Não foi possível obter a foto de ID ' + $routeParams.fotoId;
+        });
     }
     
     $scope.submeter = function() {
         if ($scope.formulario.$valid) {
-            if ($scope.foto._id) {
-                $http.put('v1/fotos/' + $scope.foto._id, $scope.foto)
-                    .success(function() {
-                        $scope.mensagem = 'A foto ' + $scope.foto.titulo + ' foi alterada com sucesso'
-                    })
-                    .error(function(erro) {
-                        console.log(erro);
-                        $scope.mensagem = 'Não foi possível alterar a foto ' + $scope.foto.titulo;
-                    });
-            } else {
-                $http.post('v1/fotos', $scope.foto)
-                    .success(function() {
+            cadastroDeFotos.cadastrar($scope.foto)
+                .then(function(dados) {
+                    $scope.mensagem = dados.mensagem;
+                
+                    if (dados.inclusao) {
                         $scope.foto = {};
-                        $scope.mensagem ='Foto incluída com sucesso';
-                        $scope.formulario.$setPristine();
-                    })
-                    .error(function(erro) {
-                        $scope.mensagem ='Não foi possível incluir a foto';
-                        console.log(erro);
-                    });
-            }
+                    }
+                })
+                .catch(function(dados) {
+                    $scope.mensagem = dados.mensagem;
+                });
         }
     }
 });
